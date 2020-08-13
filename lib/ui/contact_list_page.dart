@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ContactList extends StatefulWidget {
+  final bool showFavorite;
+
+  ContactList(this.showFavorite);
+
   @override
   State<StatefulWidget> createState() {
     return ContactListState();
@@ -32,13 +36,21 @@ class ContactListState extends State<ContactList> {
           builder: (context, state) {
             print("state----> $state");
             if (state is ContactLoadedState) {
-              return buildContactList(state.contacts);
+              List<Contact> contactList = state.contacts;
+              if (widget.showFavorite) {
+                contactList =
+                    contactList.where((element) => element.isFavorite).toList();
+              }
+
+              /* contactList.forEach((element) {
+                print("element-->${element.name} -  ${element.isFavorite}");
+              });*/
+              return buildContactList(contactList);
             } else if (state is ContactEmptyState) {
               return buildEmptyListUi();
             } else if (state is ContactErrorState) {
               return buildLoadingUi();
-            }
-            else {
+            } else {
               return buildLoadingUi();
             }
           },

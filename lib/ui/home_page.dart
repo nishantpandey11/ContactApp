@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'contact_list_page.dart';
-import 'favorite_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -29,11 +28,11 @@ class _HomePageState extends State<HomePage> {
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return ContactList();
+        return ContactList(false);
       case 1:
         return AddContact();
       case 2:
-        return FavoriteContacts();
+        return ContactList(true);
     }
   }
 
