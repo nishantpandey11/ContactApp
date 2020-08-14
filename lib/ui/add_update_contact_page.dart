@@ -1,4 +1,8 @@
+import 'package:contactsapp/bloc/contact_bloc.dart';
+import 'package:contactsapp/bloc/contact_event.dart';
+import 'package:contactsapp/data/model/contact.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddContact extends StatefulWidget {
   @override
@@ -14,10 +18,26 @@ class AddContactState extends State<AddContact> {
   bool _isFav = false;
 
   GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  ContactBloc bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = BlocProvider.of<ContactBloc>(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /*appBar: AppBar(title: Text("Add contact"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                print("delete");
+              },
+            ),
+          ]),*/
       body: Container(
         child: Form(
           key: _globalKey,
@@ -25,7 +45,7 @@ class AddContactState extends State<AddContact> {
             shrinkWrap: true,
             padding: EdgeInsets.all(25.0),
             children: <Widget>[
-              _buildImageField(),
+              _buildImageField(context),
               _buildNameField(),
               _buildPhoneNumberField(),
               _buildMobileNumberField(),
@@ -34,19 +54,17 @@ class AddContactState extends State<AddContact> {
                 height: 50.0,
               ),
               RaisedButton(
+                color: Colors.green,
                 child: Text(
                   "Submit",
-                  style: TextStyle(fontSize: 16.0, color: Colors.blue),
+                  style: TextStyle(fontSize: 16.0, color: Colors.white),
                 ),
                 onPressed: () {
                   if (!_globalKey.currentState.validate()) {
                     return;
                   }
                   _globalKey.currentState.save();
-                  print(_name);
-                  print(_phoneNumber);
-                  print(_mobileNumber);
-                  print(_isFav);
+                  _upsertData();
                 },
               )
             ],
@@ -54,6 +72,42 @@ class AddContactState extends State<AddContact> {
         ),
       ),
     );
+  }
+
+  void _upsertData() async {
+    //todo : add contact (edit pending)
+    Contact con = Contact(
+        isFavorite: _isFav,
+        mobileNumber: _mobileNumber,
+        name: _name,
+        phoneNumber: _phoneNumber,
+        userImg: "");
+    print(_name);
+    print(_phoneNumber);
+    print(_mobileNumber);
+    print(_isFav);
+    bloc.add(UpsertContactEvent(con));
+    _resetData();
+  }
+
+  void _deleteAllContact() async {
+    //todo delete data;
+    bloc.add(DeleteAllContactEvent());
+  }
+
+  void _resetData() {
+    _globalKey.currentState.reset();
+    _isFav = false;
+    _name = "";
+    _phoneNumber = "";
+    _mobileNumber = "";
+
+    print("======RESET=======");
+    print(_name);
+    print(_phoneNumber);
+    print(_mobileNumber);
+    print(_isFav);
+    print("======RESET DONE=======");
   }
 
   Widget _buildNameField() {
@@ -101,11 +155,16 @@ class AddContactState extends State<AddContact> {
     );
   }
 
-  Widget _buildImageField() {
+  Widget _buildImageField(BuildContext context) {
     AssetImage assetImage = AssetImage('images/pizza.png');
     Image image = Image(image: assetImage, width: 100.0, height: 100.0);
-    return Container(
-      child: image,
+    return GestureDetector(
+      child: Container(
+        child: image,
+      ),
+      onTap: () {
+        _deleteAllContact();
+      },
     );
   }
 

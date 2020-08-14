@@ -122,7 +122,6 @@ class ContactListState extends State<ContactList> {
     for (int i = 1; i < 6; i++) {
       print("insertDummyData $i");
       Contact con = Contact(
-          id: i,
           isFavorite: i % 2 == 0 ? true : false,
           mobileNumber: "1234567890 - $i",
           name: "Nishant $i",

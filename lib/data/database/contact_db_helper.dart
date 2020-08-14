@@ -53,7 +53,7 @@ class DbHelper {
     ContactDao dao = ContactDao();
     for (int i = 1; i < 6; i++) {
       print("insertDummyData $i");
-      Contact con = Contact(
+      Contact con = Contact.withID(
           id: i,
           isFavorite: i % 2 == 0 ? true : false,
           mobileNumber: "1234567890 - $i",

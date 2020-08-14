@@ -30,7 +30,8 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return ContactList(false);
       case 1:
-        return AddContact();
+         //Navigator.push(context, MaterialPageRoute(builder: (context) => AddContact()));
+         return AddContact();
       case 2:
         return ContactList(true);
     }

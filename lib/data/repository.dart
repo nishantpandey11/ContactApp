@@ -6,11 +6,14 @@ class Repository {
 
   Future<List<Contact>> getAllContacts() => contactDao.getAllContacts();
 
-  Future<List<Contact>> getAllFavoriteContacts() => contactDao.getAllFavContacts();
+  Future<List<Contact>> getAllFavoriteContacts() =>
+      contactDao.getAllFavContacts();
 
   Future insertContact(Contact contact) => contactDao.insertContact(contact);
 
   Future updateContact(Contact contact) => contactDao.updateContact(contact);
 
   Future deleteContact(int id) => contactDao.deleteContact(id);
+
+  Future deleteAllContact() => contactDao.deleteAllContact();
 }

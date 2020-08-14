@@ -7,6 +7,13 @@ class Contact {
   bool isFavorite;
 
   Contact(
+      {this.name,
+      this.mobileNumber,
+      this.phoneNumber,
+      this.userImg,
+      this.isFavorite});
+
+  Contact.withID(
       {this.id,
       this.name,
       this.mobileNumber,
@@ -14,7 +21,7 @@ class Contact {
       this.userImg,
       this.isFavorite});
 
-  factory Contact.fromDatabaseJson(Map<String, dynamic> data) => Contact(
+  factory Contact.fromDatabaseJson(Map<String, dynamic> data) => Contact.withID(
         id: data['id'],
         name: data['name'],
         mobileNumber: data['mobileNumber'],
@@ -23,12 +30,17 @@ class Contact {
         isFavorite: data['isFavorite'] == 0 ? false : true,
       );
 
-  Map<String, dynamic> toDatabaseJson() => {
-        "id": this.id,
-        "name": this.name,
-        "mobileNumber": this.mobileNumber,
-        "phoneNumber": this.phoneNumber,
-        "userImg": this.userImg,
-        "isFavorite": this.isFavorite == false ? 0 : 1,
-      };
+  Map<String, dynamic> toDatabaseJson() {
+    var map = Map<String, dynamic>();
+    if (this.id != null) {
+      map["id"] = this.id;
+    }
+    map["name"] = this.name;
+    map["mobileNumber"] = this.mobileNumber;
+    map["phoneNumber"] = this.phoneNumber;
+    map["userImg"] = this.userImg;
+    map["isFavorite"] = this.isFavorite == false ? 0 : 1;
+
+    return map;
+  }
 }

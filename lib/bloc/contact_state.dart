@@ -30,3 +30,13 @@ class ContactErrorState extends ContactState {
   @override
   List<Object> get props => null;
 }
+
+class ContactUpsertedState extends ContactState {
+  @override
+  List<Object> get props => null;
+}
+
+class AllContactDeletedState extends ContactState {
+  @override
+  List<Object> get props => null;
+}
