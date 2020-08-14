@@ -2,10 +2,11 @@ import 'package:contactsapp/bloc/contact_bloc.dart';
 import 'package:contactsapp/bloc/contact_event.dart';
 import 'package:contactsapp/bloc/contact_state.dart';
 import 'package:contactsapp/data/database/contact_dao.dart';
-import 'package:contactsapp/data/database/contact_db_helper.dart';
 import 'package:contactsapp/data/model/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'add_update_contact_page.dart';
 
 class ContactList extends StatefulWidget {
   final bool showFavorite;
@@ -45,23 +46,24 @@ class ContactListState extends State<ContactList> {
               /* contactList.forEach((element) {
                 print("element-->${element.name} -  ${element.isFavorite}");
               });*/
-              return buildContactList(contactList);
+              return _buildContactList(contactList);
             } else if (state is ContactEmptyState) {
-              return buildEmptyListUi();
+              return _buildEmptyListUi();
             } else if (state is ContactErrorState) {
-              return buildLoadingUi();
+              return _buildLoadingUi();
             } else {
-              return buildLoadingUi();
+              return _buildLoadingUi();
             }
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          DbHelper helper = DbHelper();
-          helper.initializeDb();
-          insertDummyData();
-          //Navigator.push(context, MaterialPageRoute(builder: (context) => AddContact()));
+          //DbHelper helper = DbHelper();
+          //helper.initializeDb();
+          //insertDummyData();
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => AddContact()));
         },
         tooltip: 'Add new contact',
         child: Icon(Icons.add),
@@ -69,7 +71,7 @@ class ContactListState extends State<ContactList> {
     );
   }
 
-  Widget buildEmptyListUi() {
+  Widget _buildEmptyListUi() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -82,7 +84,7 @@ class ContactListState extends State<ContactList> {
     );
   }
 
-  Widget buildLoadingUi() {
+  Widget _buildLoadingUi() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -95,7 +97,7 @@ class ContactListState extends State<ContactList> {
     );
   }
 
-  Widget buildContactList(List<Contact> contacts) {
+  Widget _buildContactList(List<Contact> contacts) {
     return ListView.builder(
       itemCount: contacts.length,
       itemBuilder: (BuildContext context, int position) {

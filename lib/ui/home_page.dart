@@ -55,25 +55,34 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.drawerItems[_selectedDrawerIndex].title),
-          centerTitle: true,
+      appBar: AppBar(
+        title: Text(widget.drawerItems[_selectedDrawerIndex].title),
+        centerTitle: true,
+      ),
+      drawer: Drawer(
+        child: Column(
+          children: <Widget>[
+            DrawerHeader(
+                child: Center(child: Text("Welcome to Contacts App")),
+                decoration: BoxDecoration(color: Colors.green)),
+            Column(children: drawerOptions)
+          ],
         ),
-        drawer: Drawer(
-          child: Column(
-            children: <Widget>[
-              DrawerHeader(
-                  child: Center(child: Text("Welcome to Contacts App")),
-                  decoration: BoxDecoration(color: Colors.green)),
-              Column(children: drawerOptions)
-            ],
-          ),
-        ),
-        body: BlocProvider(
-          create: (context) => ContactBloc(Repository()),
-          child: _getDrawerItemWidget(_selectedDrawerIndex),
-        )
-        //_getDrawerItemWidget(_selectedDrawerIndex),
-        );
+      ),
+      body: BlocProvider(
+        create: (context) => ContactBloc(Repository()),
+        child: _getDrawerItemWidget(_selectedDrawerIndex),
+      ),
+      /*floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          //DbHelper helper = DbHelper();
+          //helper.initializeDb();
+          //insertDummyData();
+          _getDrawerItemWidget(1);
+        },
+        tooltip: 'Add new contact',
+        child: Icon(Icons.add),
+      ),*/
+    );
   }
 }
