@@ -1,7 +1,6 @@
 import 'package:contactsapp/bloc/contact_bloc.dart';
 import 'package:contactsapp/bloc/contact_event.dart';
 import 'package:contactsapp/bloc/contact_state.dart';
-import 'package:contactsapp/data/database/contact_dao.dart';
 import 'package:contactsapp/data/model/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,10 +41,6 @@ class ContactListState extends State<ContactList> {
                 contactList =
                     contactList.where((element) => element.isFavorite).toList();
               }
-
-              /* contactList.forEach((element) {
-                print("element-->${element.name} -  ${element.isFavorite}");
-              });*/
               return _buildContactList(contactList);
             } else if (state is ContactEmptyState) {
               return _buildEmptyListUi();
@@ -59,9 +54,6 @@ class ContactListState extends State<ContactList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //DbHelper helper = DbHelper();
-          //helper.initializeDb();
-          //insertDummyData();
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => AddContact()));
         },
@@ -115,19 +107,5 @@ class ContactListState extends State<ContactList> {
         );
       },
     );
-  }
-
-  void insertDummyData() {
-    ContactDao dao = ContactDao();
-    for (int i = 1; i < 6; i++) {
-      print("insertDummyData $i");
-      Contact con = Contact(
-          isFavorite: i % 2 == 0 ? true : false,
-          mobileNumber: "1234567890 - $i",
-          name: "Nishant $i",
-          phoneNumber: "011 12345678 +$i",
-          userImg: "");
-      dao.insertContact(con);
-    }
   }
 }

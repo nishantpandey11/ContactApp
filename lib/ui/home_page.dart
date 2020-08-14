@@ -30,8 +30,7 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return ContactList(false);
       case 1:
-         //Navigator.push(context, MaterialPageRoute(builder: (context) => AddContact()));
-         return AddContact();
+        return AddContact();
       case 2:
         return ContactList(true);
     }
@@ -57,9 +56,18 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.drawerItems[_selectedDrawerIndex].title),
-        centerTitle: true,
-      ),
+          title: Text(widget.drawerItems[_selectedDrawerIndex].title),
+          centerTitle: true,
+          actions: <Widget>[
+            _selectedDrawerIndex == 1
+                ? IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      print("delete");
+                    },
+                  )
+                : Text(""),
+          ]),
       drawer: Drawer(
         child: Column(
           children: <Widget>[
@@ -71,15 +79,15 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: BlocProvider(
-        create: (context) => ContactBloc(Repository()),
+        create: (context) {
+          return ContactBloc(Repository());
+        },
         child: _getDrawerItemWidget(_selectedDrawerIndex),
       ),
       /*floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //DbHelper helper = DbHelper();
-          //helper.initializeDb();
-          //insertDummyData();
-          _getDrawerItemWidget(1);
+          _onSelectItem(1);
+          print("====floatingActionButton====");
         },
         tooltip: 'Add new contact',
         child: Icon(Icons.add),

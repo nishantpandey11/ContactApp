@@ -29,15 +29,6 @@ class AddContactState extends State<AddContact> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*appBar: AppBar(title: Text("Add contact"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                print("delete");
-              },
-            ),
-          ]),*/
       body: Container(
         child: Form(
           key: _globalKey,

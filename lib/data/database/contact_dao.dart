@@ -63,10 +63,10 @@ class ContactDao {
 
     return result;
   }
+
   Future<int> deleteAllContact() async {
     Database db = await helper.db;
-    var result =
-        await db.delete(helper.tblContacts);
+    var result = await db.delete(helper.tblContacts);
 
     return result;
   }
