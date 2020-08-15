@@ -21,3 +21,10 @@ class DeleteAllContactEvent extends ContactEvent {
   @override
   List<Object> get props => null;
 }
+class DeleteContactEvent extends ContactEvent {
+  final int id;
+
+  DeleteContactEvent(this.id);
+  @override
+  List<Object> get props => null;
+}

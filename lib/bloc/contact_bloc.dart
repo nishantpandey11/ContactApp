@@ -26,10 +26,12 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     } else if (event is UpsertContactEvent) {
       var result = await repository.insertContact(event.contact);
       yield ContactUpsertedState();
-
-    } else if(event is DeleteAllContactEvent){
-      var result  = await repository.deleteAllContact();
+    } else if (event is DeleteAllContactEvent) {
+      var result = await repository.deleteAllContact();
       yield AllContactDeletedState();
+    } else if (event is DeleteContactEvent) {
+      var result = await repository.deleteContact(event.id);
+      yield ContactDeletedState();
     }
   }
 }

@@ -18,10 +18,13 @@ class AddContact extends StatefulWidget {
 }
 
 class AddContactState extends State<AddContact> {
-  String _name;
-  String _phoneNumber;
-  String _mobileNumber;
   bool _isFav = false;
+  int _id;
+  String _img;
+
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _mobileController = TextEditingController();
 
   GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   ContactBloc bloc;
@@ -30,6 +33,16 @@ class AddContactState extends State<AddContact> {
   void initState() {
     super.initState();
     bloc = BlocProvider.of<ContactBloc>(context);
+    Contact contact = widget.currentContact;
+    if (contact != null) {
+      _nameController.text = contact.name;
+      _phoneController.text = contact.phoneNumber;
+      _mobileController.text = contact.mobileNumber;
+
+      _isFav = contact.isFavorite;
+      _id = contact.id;
+      _img = contact.userImg;
+    }
   }
 
   @override
@@ -48,12 +61,12 @@ class AddContactState extends State<AddContact> {
               _buildMobileNumberField(),
               _buildIsFavoriteCheckbox(),
               SizedBox(
-                height: 50.0,
+                height: 30.0,
               ),
               RaisedButton(
                 color: Colors.green,
                 child: Text(
-                  "Submit",
+                  _id == null ? "Save" : "Update",
                   style: TextStyle(fontSize: 16.0, color: Colors.white),
                 ),
                 onPressed: () {
@@ -63,7 +76,19 @@ class AddContactState extends State<AddContact> {
                   _globalKey.currentState.save();
                   _upsertData();
                 },
-              )
+              ),
+              _id != null
+                  ? RaisedButton(
+                      color: Colors.red,
+                      child: Text(
+                        "Delete",
+                        style: TextStyle(fontSize: 16.0, color: Colors.white),
+                      ),
+                      onPressed: () {
+                        deleteContact(_id);
+                      },
+                    )
+                  : Text("")
             ],
           ),
         ),
@@ -72,47 +97,45 @@ class AddContactState extends State<AddContact> {
   }
 
   void _upsertData() async {
-    //todo : add contact (edit pending)
-    Contact con = Contact(
+    Contact con = Contact.withID(
+        mobileNumber: _mobileController.text.trim(),
+        name: (_nameController.text[0].toUpperCase() +
+                _nameController.text.substring(1))
+            .trim(),
+        phoneNumber: _phoneController.text.trim(),
+        id: _id,
         isFavorite: _isFav,
-        mobileNumber: _mobileNumber,
-        name: _name,
-        phoneNumber: _phoneNumber,
-        userImg: "");
-    print(_name);
-    print(_phoneNumber);
-    print(_mobileNumber);
-    print(_isFav);
+        userImg: _img);
     bloc.add(UpsertContactEvent(con));
-    widget.parent.changePage(0, null);
     _resetData();
   }
 
   void _deleteAllContact() async {
-    //todo delete data;
     bloc.add(DeleteAllContactEvent());
+  }
+
+  void deleteContact(int id) {
+    bloc.add(DeleteContactEvent(id));
+    _resetData();
   }
 
   void _resetData() {
     _globalKey.currentState.reset();
-    _isFav = false;
-    _name = "";
-    _phoneNumber = "";
-    _mobileNumber = "";
 
-    print("======RESET=======");
-    print(_name);
-    print(_phoneNumber);
-    print(_mobileNumber);
-    print(_isFav);
-    print("======RESET DONE=======");
+    _isFav = false;
+    _id = null;
+    _img = "";
+    _nameController.clear();
+    _mobileController.clear();
+    _phoneController.clear();
+    widget.parent.changePage(0, null);
   }
 
   Widget _buildNameField() {
-    //TextEditingController nameEditingController = TextEditingController();
     return TextFormField(
-      //controller: nameEditingController,
-
+      controller: _nameController,
+      textCapitalization: TextCapitalization.words,
+      keyboardType: TextInputType.text,
       decoration: InputDecoration(labelText: "Name"),
       validator: (String value) {
         if (value.isEmpty) {
@@ -120,13 +143,14 @@ class AddContactState extends State<AddContact> {
         }
       },
       onSaved: (String value) {
-        _name = value;
+        _nameController.text = value;
       },
     );
   }
 
   Widget _buildMobileNumberField() {
     return TextFormField(
+      controller: _mobileController,
       decoration: InputDecoration(labelText: "Mobile Number"),
       keyboardType: TextInputType.number,
       maxLength: 10,
@@ -136,13 +160,14 @@ class AddContactState extends State<AddContact> {
         }
       },
       onSaved: (String value) {
-        _mobileNumber = value;
+        _mobileController.text = value;
       },
     );
   }
 
   Widget _buildPhoneNumberField() {
     return TextFormField(
+      controller: _phoneController,
       decoration: InputDecoration(labelText: "Phone Number"),
       keyboardType: TextInputType.number,
       validator: (String value) {
@@ -151,13 +176,14 @@ class AddContactState extends State<AddContact> {
         }
       },
       onSaved: (String value) {
-        _phoneNumber = value;
+        _phoneController.text = value;
       },
     );
   }
 
   Widget _buildImageField(BuildContext context) {
-    print("=======currentContact=======${widget.currentContact?.id}");
+    print(
+        "=====currentContact=====\n${widget.currentContact?.toString()}\n=======");
     AssetImage assetImage = AssetImage('images/pizza.png');
     Image image = Image(image: assetImage, width: 100.0, height: 100.0);
     return GestureDetector(
@@ -191,5 +217,13 @@ class AddContactState extends State<AddContact> {
       controlAffinity: ListTileControlAffinity.leading,
       activeColor: Colors.green,
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _mobileController.dispose();
+    _nameController.dispose();
+    _phoneController.dispose();
   }
 }

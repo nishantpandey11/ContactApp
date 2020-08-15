@@ -43,4 +43,11 @@ class Contact {
 
     return map;
   }
+
+  @override
+  String toString() {
+    return 'Contact{id: $id, name: $name, mobileNumber: $mobileNumber, phoneNumber: $phoneNumber, userImg: $userImg, isFavorite: $isFavorite}';
+  }
+
+
 }

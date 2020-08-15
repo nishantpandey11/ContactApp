@@ -44,7 +44,13 @@ class ContactDao {
 
   Future<int> insertContact(Contact contact) async {
     Database db = await helper.db;
-    var result = await db.insert(helper.tblContacts, contact.toDatabaseJson());
+    var result;
+    if (contact.id == null) {
+      result = await db.insert(helper.tblContacts, contact.toDatabaseJson());
+    } else {
+      result = await db.update(helper.tblContacts, contact.toDatabaseJson(),
+          where: "id = ?", whereArgs: [contact.id]);
+    }
     return result;
   }
 

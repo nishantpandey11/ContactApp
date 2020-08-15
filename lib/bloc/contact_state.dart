@@ -40,3 +40,8 @@ class AllContactDeletedState extends ContactState {
   @override
   List<Object> get props => null;
 }
+
+class ContactDeletedState extends ContactState {
+  @override
+  List<Object> get props => null;
+}

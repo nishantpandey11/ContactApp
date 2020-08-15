@@ -13,7 +13,6 @@ class ContactList extends StatefulWidget {
 
   ContactList(this.showFavorite, this.parent);
 
-
   @override
   State<StatefulWidget> createState() {
     return ContactListState();
@@ -36,14 +35,13 @@ class ContactListState extends State<ContactList> {
       body: Container(
         child: BlocBuilder<ContactBloc, ContactState>(
           builder: (context, state) {
-            print("state----> $state");
             if (state is ContactLoadedState) {
               List<Contact> contactList = state.contacts;
               if (widget.showFavorite) {
                 contactList =
                     contactList.where((element) => element.isFavorite).toList();
               }
-              if(contactList.isEmpty){
+              if (contactList.isEmpty) {
                 return _buildEmptyListUi();
               }
               return _buildContactList(contactList);
@@ -57,15 +55,6 @@ class ContactListState extends State<ContactList> {
           },
         ),
       ),
-
-      /*floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          return AddContact();
-          //Navigator.push(context, MaterialPageRoute(builder: (context) => AddContact()));
-        },
-        tooltip: 'Add new contact',
-        child: Icon(Icons.add),
-      ),*/
     );
   }
 
@@ -104,8 +93,7 @@ class ContactListState extends State<ContactList> {
           elevation: 2.0,
           child: ListTile(
             onTap: () {
-              print("====ListTile====");
-              widget.parent.changePage(1,contacts[position]);
+              widget.parent.changePage(1, contacts[position]);
             },
             leading: CircleAvatar(
               backgroundColor: Colors.white,

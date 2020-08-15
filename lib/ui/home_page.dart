@@ -9,7 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'contact_list_page.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
+  HomePage({Key key, this.title, this.addContactState}) : super(key: key);
+
+  final AddContactState addContactState;
 
   final String title;
 
@@ -30,10 +32,14 @@ class HomePageState extends State<HomePage> {
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
+        _currentContact = null;
         return ContactList(false, this);
       case 1:
-        return AddContact(this,_currentContact);
+        print("==mobile==${_currentContact?.mobileNumber?.length}");
+        print("==phone==${_currentContact?.phoneNumber?.length}");
+        return AddContact(this, _currentContact);
       case 2:
+        _currentContact = null;
         return ContactList(true, this);
     }
   }
@@ -60,18 +66,9 @@ class HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(widget.drawerItems[_selectedDrawerIndex].title),
-          centerTitle: true,
-          actions: <Widget>[
-            _selectedDrawerIndex == 1
-                ? IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      print("delete");
-                    },
-                  )
-                : Text(""),
-          ]),
+        title: Text(widget.drawerItems[_selectedDrawerIndex].title),
+        centerTitle: true,
+      ),
       drawer: Drawer(
         child: Column(
           children: <Widget>[
@@ -91,8 +88,7 @@ class HomePageState extends State<HomePage> {
       floatingActionButton: _selectedDrawerIndex != 1
           ? FloatingActionButton(
               onPressed: () {
-                //_getDrawerItemWidget(1);
-                changePage(1,null);
+                changePage(1, null);
               },
               tooltip: 'Add new contact',
               child: Icon(Icons.add),
@@ -101,7 +97,7 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  changePage(int pos,Contact contact) {
+  changePage(int pos, Contact contact) {
     setState(() {
       _currentContact = contact;
       _selectedDrawerIndex = pos;
