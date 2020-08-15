@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:contactsapp/bloc/contact_bloc.dart';
 import 'package:contactsapp/bloc/contact_event.dart';
 import 'package:contactsapp/data/model/contact.dart';
 import 'package:contactsapp/ui/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddContact extends StatefulWidget {
   final HomePageState parent;
@@ -18,9 +21,12 @@ class AddContact extends StatefulWidget {
 }
 
 class AddContactState extends State<AddContact> {
+  File _image;
+  final picker = ImagePicker();
+
   bool _isFav = false;
   int _id;
-  String _img;
+  String _imgPath = "";
 
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -41,7 +47,7 @@ class AddContactState extends State<AddContact> {
 
       _isFav = contact.isFavorite;
       _id = contact.id;
-      _img = contact.userImg;
+      _imgPath = contact.userImg;
     }
   }
 
@@ -96,6 +102,15 @@ class AddContactState extends State<AddContact> {
     );
   }
 
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      _image = File(pickedFile.path);
+      _imgPath = pickedFile.path;
+    });
+  }
+
   void _upsertData() async {
     Contact con = Contact.withID(
         mobileNumber: _mobileController.text.trim(),
@@ -105,7 +120,7 @@ class AddContactState extends State<AddContact> {
         phoneNumber: _phoneController.text.trim(),
         id: _id,
         isFavorite: _isFav,
-        userImg: _img);
+        userImg: _imgPath == null ? "" : _imgPath);
     bloc.add(UpsertContactEvent(con));
     _resetData();
   }
@@ -124,7 +139,8 @@ class AddContactState extends State<AddContact> {
 
     _isFav = false;
     _id = null;
-    _img = "";
+    _imgPath = "";
+    _image = null;
     _nameController.clear();
     _mobileController.clear();
     _phoneController.clear();
@@ -157,6 +173,8 @@ class AddContactState extends State<AddContact> {
       validator: (String value) {
         if (value.isEmpty) {
           return "Mobile number is Required";
+        } else if (value.length < 10) {
+          return "Mobile number must be of 10 Digit";
         }
       },
       onSaved: (String value) {
@@ -182,17 +200,31 @@ class AddContactState extends State<AddContact> {
   }
 
   Widget _buildImageField(BuildContext context) {
-    print(
-        "=====currentContact=====\n${widget.currentContact?.toString()}\n=======");
-    AssetImage assetImage = AssetImage('images/pizza.png');
+    AssetImage assetImage = AssetImage('images/avatar.png');
     Image image = Image(image: assetImage, width: 100.0, height: 100.0);
+
     return GestureDetector(
       child: Container(
-        child: image,
+        child:
+            _imgPath == null || _imgPath.isEmpty ? image : getAvatar(_imgPath),
       ),
       onTap: () {
+        getImage();
+      },
+      onLongPress: () {
         _deleteAllContact();
       },
+    );
+  }
+
+  Widget getAvatar(String imgPath) {
+    return CircleAvatar(
+      radius: 55,
+      backgroundColor: Colors.white,
+      child: CircleAvatar(
+        radius: 50,
+        backgroundImage: FileImage(File(imgPath)),
+      ),
     );
   }
 

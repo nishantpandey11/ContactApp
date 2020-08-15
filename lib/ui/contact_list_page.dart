@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:contactsapp/bloc/contact_bloc.dart';
 import 'package:contactsapp/bloc/contact_event.dart';
 import 'package:contactsapp/bloc/contact_state.dart';
@@ -93,17 +95,34 @@ class ContactListState extends State<ContactList> {
           elevation: 2.0,
           child: ListTile(
             onTap: () {
+              print("contact====" + contacts[position].toString());
               widget.parent.changePage(1, contacts[position]);
             },
             leading: CircleAvatar(
               backgroundColor: Colors.white,
-              child: Text(contacts[position].id.toString()),
+              backgroundImage: contacts[position].userImg == null ||
+                      contacts[position].userImg.isEmpty
+                  ? AssetImage('images/avatar.png')
+                  : FileImage(File(contacts[position].userImg)),
             ),
             title: Text(contacts[position].name),
-            subtitle: Text(contacts[position].mobileNumber),
+            subtitle: Text(
+                "Mobile : ${contacts[position].mobileNumber}\nLandline : ${contacts[position].phoneNumber}"),
+            isThreeLine: true,
           ),
         );
       },
+    );
+  }
+
+  Widget getAvatar(String imgPath) {
+    return CircleAvatar(
+      //radius: 55,
+      //backgroundColor: Colors.lightGreen,
+      //child:CircleAvatar(
+      radius: 50,
+      backgroundImage: AssetImage(imgPath),
+      //),
     );
   }
 }
