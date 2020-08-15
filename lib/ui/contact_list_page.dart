@@ -5,12 +5,14 @@ import 'package:contactsapp/data/model/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'add_update_contact_page.dart';
+import 'home_page.dart';
 
 class ContactList extends StatefulWidget {
   final bool showFavorite;
+  final HomePageState parent;
 
-  ContactList(this.showFavorite);
+  ContactList(this.showFavorite, this.parent);
+
 
   @override
   State<StatefulWidget> createState() {
@@ -41,6 +43,9 @@ class ContactListState extends State<ContactList> {
                 contactList =
                     contactList.where((element) => element.isFavorite).toList();
               }
+              if(contactList.isEmpty){
+                return _buildEmptyListUi();
+              }
               return _buildContactList(contactList);
             } else if (state is ContactEmptyState) {
               return _buildEmptyListUi();
@@ -52,14 +57,15 @@ class ContactListState extends State<ContactList> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+
+      /*floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddContact()));
+          return AddContact();
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => AddContact()));
         },
         tooltip: 'Add new contact',
         child: Icon(Icons.add),
-      ),
+      ),*/
     );
   }
 
@@ -97,6 +103,10 @@ class ContactListState extends State<ContactList> {
           color: Colors.white,
           elevation: 2.0,
           child: ListTile(
+            onTap: () {
+              print("====ListTile====");
+              widget.parent.changePage(1,contacts[position]);
+            },
             leading: CircleAvatar(
               backgroundColor: Colors.white,
               child: Text(contacts[position].id.toString()),

@@ -1,10 +1,16 @@
 import 'package:contactsapp/bloc/contact_bloc.dart';
 import 'package:contactsapp/bloc/contact_event.dart';
 import 'package:contactsapp/data/model/contact.dart';
+import 'package:contactsapp/ui/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddContact extends StatefulWidget {
+  final HomePageState parent;
+  final Contact currentContact;
+
+  AddContact(this.parent, this.currentContact);
+
   @override
   State<StatefulWidget> createState() {
     return AddContactState();
@@ -78,6 +84,7 @@ class AddContactState extends State<AddContact> {
     print(_mobileNumber);
     print(_isFav);
     bloc.add(UpsertContactEvent(con));
+    widget.parent.changePage(0, null);
     _resetData();
   }
 
@@ -102,7 +109,10 @@ class AddContactState extends State<AddContact> {
   }
 
   Widget _buildNameField() {
+    //TextEditingController nameEditingController = TextEditingController();
     return TextFormField(
+      //controller: nameEditingController,
+
       decoration: InputDecoration(labelText: "Name"),
       validator: (String value) {
         if (value.isEmpty) {
@@ -147,6 +157,7 @@ class AddContactState extends State<AddContact> {
   }
 
   Widget _buildImageField(BuildContext context) {
+    print("=======currentContact=======${widget.currentContact?.id}");
     AssetImage assetImage = AssetImage('images/pizza.png');
     Image image = Image(image: assetImage, width: 100.0, height: 100.0);
     return GestureDetector(

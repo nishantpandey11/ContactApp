@@ -1,4 +1,5 @@
 import 'package:contactsapp/bloc/contact_bloc.dart';
+import 'package:contactsapp/data/model/contact.dart';
 import 'package:contactsapp/data/model/drawer_item.dart';
 import 'package:contactsapp/data/repository.dart';
 import 'package:contactsapp/ui/add_update_contact_page.dart';
@@ -19,20 +20,21 @@ class HomePage extends StatefulWidget {
   ];
 
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   int _selectedDrawerIndex = 0;
+  Contact _currentContact;
 
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return ContactList(false);
+        return ContactList(false, this);
       case 1:
-        return AddContact();
+        return AddContact(this,_currentContact);
       case 2:
-        return ContactList(true);
+        return ContactList(true, this);
     }
   }
 
@@ -50,7 +52,9 @@ class _HomePageState extends State<HomePage> {
         leading: Icon(d.icon),
         title: Text(d.title),
         selected: i == _selectedDrawerIndex,
-        onTap: () => _onSelectItem(i),
+        onTap: () {
+          _onSelectItem(i);
+        },
       ));
     }
 
@@ -78,20 +82,29 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: BlocProvider(
+      body: BlocProvider<ContactBloc>(
         create: (context) {
           return ContactBloc(Repository());
         },
         child: _getDrawerItemWidget(_selectedDrawerIndex),
       ),
-      /*floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _onSelectItem(1);
-          print("====floatingActionButton====");
-        },
-        tooltip: 'Add new contact',
-        child: Icon(Icons.add),
-      ),*/
+      floatingActionButton: _selectedDrawerIndex != 1
+          ? FloatingActionButton(
+              onPressed: () {
+                //_getDrawerItemWidget(1);
+                changePage(1,null);
+              },
+              tooltip: 'Add new contact',
+              child: Icon(Icons.add),
+            )
+          : Text(""),
     );
+  }
+
+  changePage(int pos,Contact contact) {
+    setState(() {
+      _currentContact = contact;
+      _selectedDrawerIndex = pos;
+    });
   }
 }
