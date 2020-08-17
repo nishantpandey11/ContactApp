@@ -66,7 +66,7 @@ class ContactListState extends State<ContactList> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            'Press + to add a contact',
+            'Press + to add a new contact',
           ),
         ],
       ),

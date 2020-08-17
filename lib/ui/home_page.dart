@@ -35,8 +35,6 @@ class HomePageState extends State<HomePage> {
         _currentContact = null;
         return ContactList(false, this);
       case 1:
-        print("==mobile==${_currentContact?.mobileNumber?.length}");
-        print("==phone==${_currentContact?.phoneNumber?.length}");
         return AddContact(this, _currentContact);
       case 2:
         _currentContact = null;
@@ -66,7 +64,9 @@ class HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.drawerItems[_selectedDrawerIndex].title),
+        title: _selectedDrawerIndex == 1 && _currentContact != null
+            ? Text("Edit Contact")
+            : Text(widget.drawerItems[_selectedDrawerIndex].title),
         centerTitle: true,
       ),
       drawer: Drawer(

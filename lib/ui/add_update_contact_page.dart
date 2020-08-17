@@ -21,7 +21,6 @@ class AddContact extends StatefulWidget {
 }
 
 class AddContactState extends State<AddContact> {
-  File _image;
   final picker = ImagePicker();
 
   bool _isFav = false;
@@ -106,7 +105,6 @@ class AddContactState extends State<AddContact> {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
-      _image = File(pickedFile.path);
       _imgPath = pickedFile.path;
     });
   }
@@ -140,7 +138,6 @@ class AddContactState extends State<AddContact> {
     _isFav = false;
     _id = null;
     _imgPath = "";
-    _image = null;
     _nameController.clear();
     _mobileController.clear();
     _phoneController.clear();
